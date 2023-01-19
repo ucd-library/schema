@@ -1,0 +1,169 @@
+* UCD Library Schema
+
+  The Library's linked schema definitions.
+
+
+** Goals
+
+   This repository is designed to provide both documentation and programmatic
+   support for the the library's linked data platform.  By support we mean:
+
+
+*** Website
+      maintaining https://schema.library.ucdavis.edu which is a website, matching
+      to some extent the UC Davis web standards that give a brief summary of the
+      applications that use linked data, fin, dams, aggie experts.
+
+
+*** Property / Object Catalog
+
+    A catalog somewhat similar to https://schema.org/ that describes each
+      individual predicate and objects that are used in the the projects.  For
+      example, https://schema.library.ucdavis.edu/is-open-access might point to
+      something that says:
+
+
+    *is-open-access* is a property of type [[http://schema.org/Property][schema:Property]].
+
+    Describes whether the content of a [[http://schema.library.ucdavis.edu/work][work]] is available via some open-access
+    mechanism.
+
+    | Values expected to be on of these types |
+    |-----------------------------------------|
+    | boolean                                 |
+
+    | Used on these types |
+    |---------------------|
+    | work                |
+
+
+*** Linked data definition of a the catalog
+
+    Defining an owl type definition for the those properties.  For example
+      (although this is not right )
+
+ #+begin_src json
+   { "@context": {
+       "@base":"http://schema.library.ucdavis.edu/",
+       "schema":"http://schema.org/"
+       },
+     "@graph":[
+         {
+         "@id":"is-open-access",
+         "@type":["schema:Property"],
+         "domain":["boolean"],
+         "range":["work"]
+         }
+   ]
+   }
+ #+end_src
+
+
+*** Context files
+
+    One important part of the using linked data in [[https://jsonld.org][JSON-LD]], is the proper
+    creation of a ~@context~ for the document.  This can be used to support
+    compaction and expansion of documents, as well as framing data in for
+    programmatic use.  We would like there to be a catalog of ~@context~ files,
+    as well, where for example, going to
+    http://schema.library.ucdavis.edu/@context/dams.json
+
+    responds with:
+
+    #+begin_src json
+{
+  "@context": {
+    "@vocab":"http://schema.org/",
+    "fast": "http://id.worldcat.org/fast/",
+    "fedora":"http://fedora.info/definitions/v4/repository#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "schema": "http://schema.org/",
+    "shelfmark":"ark:/87287/d7r94j/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "ucdlib":"http://digital.ucdavis.edu/schema#",
+    "ldp":"http://www.w3.org/ns/ldp#",
+    "about": {
+      "@type":"@id"
+    },
+    "datePublished":{
+      "@type":"xsd:date"
+    },
+    "yearPublished":{
+      "@id":"datePublished",
+      "@type":"xsd:gYear"
+    },
+    "sdDatePublished":{
+      "@type":"xsd:date"
+    },
+    "sdYearPublished":{
+      "@id":"sdDatePublished",
+      "@type":"xsd:gYear"
+    },
+    "identifier":{"@type":"@id"},
+    "isPartOf":{"@type":"@id"},
+    "image":{"@type":"@id"},
+    "license":{"@type":"@id"},
+    "sdLicense":{"@type":"@id"},
+    "sdPublisher":{"@type":"@id"},
+    "publisher":{"@type":"@id"},
+    "name":{
+      "@language":"en"
+    },
+    "ldp:membershipResource":{"@type":"@id"},
+    "ldp:isMemberOfRelation":{"@type":"@id"},
+    "ldp:hasMemberOfRelation":{"@type":"@id"}
+  }
+}
+    #+end_src
+
+    In this fashion, metadata creators can create more simple documents as in:
+
+    #+begin_src json
+      {
+        "@context": "https://schema.library.ucdavis.edu/@context/dams",
+        "@id": "",
+        "@type": [
+          "fedora:ArchivalGroup",
+          "CreativeWork",
+          "Menu"
+        ],
+        "about": [
+          "fast:1424061",
+          "fast:893952"
+        ],
+        "yearPublished": "1960",
+        "datePublished": "1960-09-07",
+        "identifier": [
+          "ark:/87287/d7002v",
+          "shelfmark:D-060/box:60+folder:112"
+        ],
+        "image": "ark:/87287/d7002v/media/images/d7002v-0",
+        "isPartOf": "https://oac.cdlib.org/findaid/ark:/13030/c8xd13fg/",
+        "license": "http://rightsstatements.org/vocab/CNE/1.0/",
+        "name": "Drake-Wiltshire Hotel (San Francisco, California): Un Dîner d'Automne"
+      }
+    #+end_src
+
+    We should provide multiple contexts, on an application basis, and we should
+    also provide ~@contexts~ for any standard data framing that we will be
+    doing for applications.
+
+*** Higher Level Object Definitions
+
+    We can also provide support for higher level defintions, for example giving
+    a more complete idea of what a [[http://schema.library.ucdavis.edu/Person][:Person]] is, and what features are
+    expected. This can be a combination of both an informative description,
+    along with more technical descriptions, for example, these
+   notes about linked data shape expressions, There are both, [[https://shex.io/][SHeX (2019)]] which is
+   implemented in [[https://jena.apache.org/documentation/shex/][Jena 4.2]], and [[https://www.w3.org/TR/shacl/][SHACL]] (2017), also in [[https://jena.apache.org/documentation/shacl/][JENA SHACL]].
+
+
+*** Versioning
+
+    We should provide an implicit but also explicit versions for our linked
+    data definitions
+
+*** Communication
+
+    We should use the issue tracking framework to manage the discussions on how
+    the decisions we made on our schema.
