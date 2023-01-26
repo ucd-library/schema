@@ -3,4 +3,4 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 ---
-[Aggie Experts Context](/@context/dams.json)
+[Aggie Experts Context](https://ucd-library.github.io/schema/@context/dams.json)

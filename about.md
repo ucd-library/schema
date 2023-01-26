@@ -1,7 +1,6 @@
 ---
 layout: page
 title: UC Davis Library Schema
-permalink: /about/
 ---
 ### Who is who
 #### Development team:
