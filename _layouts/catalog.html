@@ -1,0 +1,18 @@
+---
+layout: default
+---
+<main class="page-content" aria-label="Content">
+    <div class="wrapper">
+        <div class="catalog">
+            <p>Some info about the properties in this collection and which apps they are part of. Labeled Aggie Experts (AE) / DAMS (DAMS)</p>
+            <h4>Properties:</h4>
+            <ul>
+                {% for s in site.schemas %}
+                <li>
+                    <a href="{{ s.url }}">{{ s.slug }}</a> (part of AE and DAMS)
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</main>
