@@ -1,0 +1,282 @@
+* JSON-LD
+
+  JSON-LD is a lightweight Linked Data format. It is easy for humans to read and
+  write. It is based on the already successful JSON format and provides a way to
+  help JSON data interoperate at Web-scale. JSON-LD is an ideal data format for
+  programming environments, REST Web services, and unstructured databases such
+  as Apache CouchDB and MongoDB.
+
+  The [[https://json-ld.org/playground/][JSON-LD Playground]] is a super helpful application that allows you explore
+  your JSON-LD questions, and it's made with the same library that we use for
+  our application development.
+
+** What is Linked Data ?
+   Linked Data is synomous with the Resource Description Framework (RDF), a
+   standard method of data interchange on the web.  The best overall description
+   of RDF is in the latest [[https://www.w3.org/TR/2014/NOTE-rdf11-primer-20140624/][Primer]].
+
+   A *statement* has a *subject* that as a property or *predicate*, that relates
+   the subject to some *object*.  All information in linked data are
+   statements.  This is kindof like an associated array.
+
+    | subject | predicate | object                     |
+    |---------+-----------+----------------------------|
+    | this    | type      | Menu                       |
+    | this    | title     | "Bohemian Grove Wine List" |
+    | this    | date      | 1958                       |
+
+    Since we want this to be a general framework, however, we want to agree on
+    what the subjects and predicates mean, and so those need to have globally
+    unique identifiers (IRIs).  The objects can be *literals* like the above
+    example. Unlike most programming languages, literals is an expandable set
+    but they are represented as strings,boolean,integers,decimals, or dates.
+
+    Objects can also be IRIs too, which can help standardize vocabularies, and
+    allow linking to globally unique items.
+
+    Organizations can publish their IRIs for properties and objects in hopes
+    that other users use those values to desribe their data, so it can be more
+    readily combined. Those are called *schemas* For the web, [[https://schema.org][schema.org]] is the
+    most used schema.
+
+    | subject                                         |
+    | <https://digital.ucdavis.edu/ark:/87287/d7764v> |
+
+    | predicate                                         | object                     |
+    |---------------------------------------------------+----------------------------|
+    | <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> | <https://schema.org/Menu>  |
+    | <http://schema.org/name>                          | "Bohemian Grove Wine List" |
+    | <http://schema.org/datePublished>                 | 1958                       |
+
+** JSON-LD
+
+   JSON-LD is a standard method for repsenting a set of statements as JSON.
+   For example, the above data can be represented like this:
+
+   #+name: jsonld_example
+   #+begin_src json
+      {
+        "@id": "https://digital.ucdavis.edu/ark:/87287/d7764v",
+        "@type": [
+            "http://schema.org/Menu",
+            "http://schema.org/CreativeWork"
+        ],
+        "http://schema.org/datePublished": [
+            {
+                "@type": "http://www.w3.org/2001/XMLSchema#gYear",
+                "@value": "1958"
+            }
+        ],
+        "http://schema.org/name": [
+            {
+                "@language": "en",
+                "@value": "Bohemian Grove Wine List"
+            }
+        ]
+    }
+   #+end_src
+
+   Important points:
+   - The basic JSON format is the object, one for each *subject*
+   - The *subject* is identified with the *@id* key.
+   - Other keys make-up the additional *predicates* for the subject
+     - *@type* is a special key
+   - If an *object* is a *literal*, then the *@value* of the object is included
+     in another object along with the literal *@type* and for
+     strings, it's *@language*.
+   - *objects* that are *IRI*'s are represented as simple strings.
+
+** The @context File
+
+   No one would look at that above description, and think that we've
+   accomplished our task of being easy for humans to read and write.  However,
+   the JSON-LD format includes another feature, the *@context* which you can
+   think of as a set of hints and short cuts to be used to simplify the JSON
+   objects.
+
+   #+begin_src json
+     {
+         "@context" : {
+             "@base":"http://digital.ucdavis.edu/",
+             "@vocab":"http://schema.org/",
+             "xs":"http://www.w3.org/2001/XMLSchema#",
+             "datePublished": {
+                 "@type": "xs:gYear"
+              },
+             "name": {
+                 "@language":"@en"
+             }
+         },
+         "@id": "@base:ark:/87287/d7764v",
+         "@type": [
+             "Menu",
+             "CreativeWork"
+         ],
+         "datePublished": "1958",
+         "name": "Bohemian Grove Wine List"
+     }
+   #+end_src
+
+   You can verify this is equivalent at the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%7B%22%40base%22%3A%22https%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%7D][Playground]].
+
+   Now JSON parsers *will* fetch IRIs for context if they can, and you can use
+   this to use other published contexts.  For example, the following almost
+   works in the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%5D%7D][playground]].
+
+  #+begin_src json
+  {
+      "@context": "http://schema.org/",
+      "@id": "@base:ark:/87287/d7764v",
+      "@type": [
+          "Menu",
+          "CreativeWork"
+      ],
+      "datePublished": "1958",
+      "name": "Bohemian Grove Wine List"
+  }
+  #+end_src
+
+It doesn't work completely, since we don't have the proper ~@base~, you can
+however use a list of ~@contexts~ in your files, so this does work.
+
+  #+begin_src json
+    {
+        "@context": [
+            "http://schema.org/",
+            {
+                "@base":"http://digital.ucdavis.edu/"
+            }
+        ],
+        "@id": "@base:ark:/87287/d7764v",
+        "@type": [
+            "Menu",
+            "CreativeWork"
+        ],
+        "datePublished": "1958",
+        "name": "Bohemian Grove Wine List"
+    }
+  #+end_src
+
+** Types of JSON-LD formats
+
+**** Expanded
+     No custom *@context*.  This is the most verbose, but also the most
+     consistant, since your application doesn't need to care about any
+     particular context being used.  This is what we saw in example 1.
+
+**** Compacted
+     JSON data in expanded format is then compacted, to the reduced format as
+     specified by the context format.  This is functional, since the data within
+     a JSON-LD file really doesn't need to be
+
+     If you want to use a compact format JSON, so for example, you have a more
+     pleasant JSON object to use, unless you're sure of where the JSON-LD came
+     from, you might have to run an explicit compact over your data.  Here is
+     another playground example.
+
+    {
+        "@context": [
+            "http://schema.org/",
+            {
+                "@base":"http://digital.ucdavis.edu/"
+            }
+        ],
+        "@id": "@base:ark:/87287/d7764v",
+        "@type": [
+            "http://schema.org/Menu",
+            "CreativeWork"
+        ],
+        "http://schema.org/datePublished": {"@type":"Date","@value":"1958" },
+        "http://schema.org/name": "Bohemian Grove Wine List"
+    }
+
+
+**** N-quads / Canonized
+
+     A very verbose, non-JSON format is the N-quad.  N-quads is another basic
+     format that can be used to exchange data.  It is included in the JSON-LD
+     discussion, because the N-Quads format
+
+
+**** Framed
+
+          Make sure to include example here
+
+*** Graphs
+
+       - The @context file
+
+         - Identifiers
+
+           - Switching Bases
+
+
+*** Gotchas
+
+
+**** Lists Versus Sets
+
+
+**** arks:
+
+              #+begin_src json
+                {
+                    "@context": [
+                        "http://schema.org/",
+                        {
+                            "@base":"http://digital.ucdavis.edu/",
+                            "ark":"http://digital.ucdavis.edu/ark:"}
+                    ],
+                    "@id": "ark:/87287/d7764v",
+                    "@type": [
+                        "http://schema.org/Menu",
+                        "CreativeWork"
+                    ],
+                    "http://schema.org/datePublished": {"@type":"Date","@value":"1958" },
+                    "http://schema.org/name": "Bohemian Grove Wine List"
+                }
+              #+end_src
+
+
+**** Altering the base for your input data
+
+     Occasionally, you'll want to use another ~@base~ to create URLs from your
+     data input.  This can be accomplished by adding a ~@context~ directly to
+     your predicate definition.  The following example can be viewed in the
+     [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22ucdlib%22%3A%22http%3A%2F%2Flibrary.ucdavis.edu%2Fschema%23%22%2C%22wikidata%22%3A%7B%22%40id%22%3A%22ucdlib%3Awikidata%22%2C%22%40type%22%3A%22%40id%22%2C%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fwikidata.org%2F%22%7D%7D%7D%5D%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%2C%22wikidata%22%3A%22Q234%22%7D&frame=%7B%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22ucdlib%22%3A%22http%3A%2F%2Flibrary.ucdavis.edu%2Fschema%23%22%2C%22wikidata%22%3A%7B%22%40id%22%3A%22ucdlib%3Awikidata%22%2C%22%40type%22%3A%22%40id%22%2C%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fwikidata.org%2F%22%7D%7D%7D%5D%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%2C%22wikidata%22%3A%22Q234%22%7D][playground]].
+
+     #+begin_src json
+       {
+           "@context": [
+               "http://schema.org/",
+               {
+                   "@base":"http://digital.ucdavis.edu/",
+                   "ucdlib":"http://library.ucdavis.edu/schema#",
+                   "wikidata":{
+                       "@id":"ucdlib:wikidata",
+                       "@type":"@id",
+                       "@context":{"@base":"http://wikidata.org/"}
+                   }
+               }
+           ],
+           "@id": "@base:ark:/87287/d7764v",
+           "@type": [
+               "Menu",
+               "CreativeWork"
+           ],
+           "datePublished": "1958",
+           "name": "Bohemian Grove Wine List",
+           "wikidata":"Q234"
+       }
+     #+end_src
+
+**** Altering literals
+              Show the new date style as an example for a new literal type.
+
+
+      - Other Uses
+        - Verifiable Credentials
+        -
+
+
+      [[https://orgmode.org/worg/org-tutorials/non-beamer-presentations.html][Presentations]]

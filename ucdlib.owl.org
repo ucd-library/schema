@@ -1,0 +1,259 @@
+* UCD Library Schema
+
+  This document describes the UCD linked data schema, additions for local
+  properties and objects.  This documentation file can be tangled to create the
+  schema.owl.jsonld file. The schema.owl.jsonld file is what's used to create
+  the rest of the site.
+
+** Predicates
+
+*** Aggie Experts Works
+
+    Aggie Experts describe works mostly with citeproc.js predicates.  We are
+    currently not including all of these, even though the current citeproc
+    schema is not a jsonld representation, but instead a json-schema
+    representation.  This is most a
+
+    There are a few additions to a ucdlib:work that are required to
+
+    #+name: ae-predicates
+    #+begin_src json :no-tangle
+      {
+          "@id":"is-open-access",
+          "@type":["owl:Property"],
+          "domain":["xsd:boolean"],
+          "range":["ucdlib:work"],
+          "description":"Describes whether a work is available via open access."
+      },
+      {
+          "@id":"rank",
+          "@type":["owl:Property"],
+          "domain":["xsd:decimal","xsd:string"],
+          "range":["schema:Thing"],
+          "description":"Provides ordering for items within a set. decimal values are sorted numerically, and strings are sorted lexigraphically"
+      }
+    #+end_src
+
+** Objects
+
+*** Aggie Experts object replicates
+
+    Although we use the VIVO schema, we replicate a set of ~types~ that are
+    explicitly for Aggie Experts.  This is for consistency with the our naming
+    scheme, and for future proofing from vivo
+
+    #+name: experts_types
+    #+begin_src json :no-tangle
+      {
+          "@id":"ucdlib:grant",
+          "equivalentClass":"vivo:Grant"
+      },
+      {
+          "@id":"ucdlib:person",
+          "equivalentClass":"vivo:Person"
+      },
+      {
+          "@id":"ucdlib:work",
+          "equivalentClass":"vivo:Work"
+      }
+    #+end_src
+
+*** Grant Information
+
+    #+name: dafis_abbrev
+    #+begin_src json :no-tangle
+      {
+          "@id": "ucdlib:dafis_abbrev",
+          "subPropertyOf":"schema:identifier",
+          "name":"UC Davis DAFIS Common Abbreviations"
+      }
+   #+end_src
+
+    #+name: grant_roles
+    #+begin_src json :no-tangle
+      {
+          "@id" : "ucdlib:CoPrincipalInvestigatorRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "equivalentClass":"vivo:CoPrincipalInvestigatorRole",
+          "dafis_abbrev":"COPI",
+          "description" : "The head of a research project is called a Principal Investigator. On occasion, he or she may have one or more Co-Principal Investigators who share with him or her responsibility for participatory conduct of the project.",
+          "label" : "Co-Principal Investigator"
+      }, {
+          "@id" : "ucdlib:CoreLeaderRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "dafis_abbrev" : "CLDR",
+          "description" : "Investigator who is designated as the lead for a “core”, as a component/project in large multi-project proposals like center grants (e.g. Center ABC, with an Administrative Core, an Education Core, and two projects). NIH refers to it as a “distinct, reviewable part…for which there is a business need to gather detailed information identified in the funding opportunity announcement”.",
+          "label" : "Core Leader"
+      }, {
+          "@id" : "ucdlib:KeyPersonnelRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "dafis_abbrev" : "KP",
+          "description" : "Umbrella term for an investigator who will contribute / do work on / carry out the proposed project, part of the research team. May also be referred to as a primary contributor or senior personnel. Per NIH: “…individuals who contribute to the scientific development or execution of a project in a substantive, measurable way, whether or not they receive salaries or compensation under the grant…Consultants and those with a postdoctoral role also may be considered senior/key personnel if they meet this definition. Senior/key personnel must devote measurable effort to the project whether or not salaries or compensation are requested. \"Zero percent\" effort or \"as needed\" are not acceptable levels of involvement for those designated as Senior/Key Personnel.”",
+          "label" : "Key Personnel"
+      }, {
+          "@id" : "ucdlib:OtherRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "dafis_abbrev" : "OTHR",
+          "label" : "Researcher"
+      }, {
+          "@id" : "ucdlib:PrincipalInvestigatorRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "equivalentClass":"vivo:PrincipalInvestigatorRole",
+          "dafis_abbrev" : "PI",
+          "description" : "The head of a research project is called a Principal Investigator. On occasion, he or she may have one or more Co-Principal Investigators who share with him or her responsibility for participatory conduct of the project.",
+          "label" : "Principal Investigator"
+      }, {
+          "@id" : "ucdlib:ProgramDirectorRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "dafis_abbrev" : "PDIR",
+          "description" : "Often used interchangeably with “Principal Investigator” (PD/PI); the person responsible for the project or program if awarded.",
+          "label" : "Program Director"
+      }, {
+          "@id" : "ucdlib:ProjectLeaderRole",
+          "@type" : "owl:Class",
+          "subClassOf":"vivo:InvestigatorRole",
+          "dafis_abbrev" : "PLDR",
+          "description" : "Investigator who is designated as the lead for a particular component within a multi-project proposal. “Project” may be used interchangeably with “Core” as defined above.",
+          "label" : "Project Leader"
+      }
+
+    #+end_src
+
+    #+name:grant_types
+    #+begin_src json :no-tangle
+      {
+          "@id" : "ucdlib:GrantType",
+          "label" : "Grant Type"
+      }, {
+          "@id" : "ucdlib:AcademicSupportGrant",
+          "dafis_abbrev" : "G",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Academic Support"
+      }, {
+          "@id" : "ucdlib:DefaultGrant",
+          "dafis_abbrev" : "X",
+          "subClassOf" : "ucdlib:grant",
+           "label" : "Default"
+      }, {
+          "@id" : "ucdlib:InstructionGrant",
+          "dafis_abbrev" : "A",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Instruction"
+      }, {
+          "@id" : "ucdlib:ResearchGrant",
+          "dafis_abbrev" : "C",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Research"
+      }, {
+          "@id" : "ucdlib:ScholarshipGrant",
+          "dafis_abbrev" : "S",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Scholarships / Fellowships"
+      }, {
+          "@id" : "ucdlib:ServiceGrant",
+          "dafis_abbrev" : "F",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Service / Other"
+      }, {
+          "@id" : "ucdlib:StudentServiceGrant",
+          "dafis_abbrev" : "S",
+          "subClassOf" : "ucdlib:grant",
+          "label" : "Student Service"
+      }
+    #+end_src
+
+** ucdlib.owl.jsonld
+
+   We automatically generate our official version of the owl file using this
+   document.
+
+*** Context File
+    We use a context file similar to vivo's, for consistency with our best
+    reprsentation.
+
+     #+name:context
+     #+begin_src json :no-tangle
+       "@context" : {
+           "dafis_abbrev": {
+               "@id": "ucdlib:dafis_abbrev"
+           },
+           "domain":{
+               "@id" : "rdfs:domain"
+           },
+           "range":{
+               "@id" : "rdfs:range",
+               "@type":"@id"
+           },
+           "description" : {
+               "@id" : "schema:description"
+           },
+           "label" : {
+               "@id" : "rdfs:label"
+           },
+           "subClassOf" : {
+               "@id" : "rdfs:subClassOf",
+               "@type" : "@id"
+           },
+           "inverseOf" : {
+               "@id" : "owl:inverseOf",
+               "@type" : "@id"
+           },
+           "allValuesFrom" : {
+               "@id" : "owl:allValuesFrom",
+           "@type" : "@id"
+         },
+         "onProperty" : {
+           "@id" : "owl:onProperty",
+           "@type" : "@id"
+         },
+         "someValuesFrom" : {
+           "@id" : "owl:someValuesFrom",
+           "@type" : "@id"
+         },
+         "comment" : {
+           "@id" : "rdfs:comment"
+         },
+         "equivalentClass" : {
+           "@id" : "owl:equivalentClass",
+           "@type" : "@id"
+         },
+         "subPropertyOf" : {
+           "@id" : "rdfs:subPropertyOf",
+           "@type" : "@id"
+         },
+         "@vocab" : "http://schema.library.ucdavis.edu/",
+         "obo" : "http://purl.obolibrary.org/obo/",
+         "owl" : "http://www.w3.org/2002/07/owl#",
+         "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+         "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+         "schema": "http://schema.org/",
+         "terms" : "http://purl.org/dc/terms/",
+         "ucdlib" : "http://schema.library.ucdavis.edu/",
+         "vivo" : "http://vivoweb.org/ontology/core#",
+         "xsd" : "http://www.w3.org/2001/XMLSchema#"
+       }
+     #+end_src
+
+*** File creation
+    The following file creates the schema file. Currently you have to explicitly
+    add in each snippet above.
+
+     #+name:file
+     #+begin_src json :noweb yes :tangle ucdlib.owl.jsonld
+       {
+         <<context>>,
+         "@graph":[
+             <<ae-predicates>>,
+         <<experts_types>>,
+           <<dafis_abbrev>>,
+           <<grant_roles>>,
+           <<grant_types>>
+                 ]
+       }
+     #+end_src
