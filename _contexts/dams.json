@@ -1,0 +1,43 @@
+{
+    "@context": {
+      "@vocab":"http://schema.org/",
+      "fast": "http://id.worldcat.org/fast/",
+      "fedora":"http://fedora.info/definitions/v4/repository#",
+      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "schema": "http://schema.org/",
+      "shelfmark":"ark:/87287/d7r94j/",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "ucdlib":"http://digital.ucdavis.edu/schema#",
+      "ldp":"http://www.w3.org/ns/ldp#",
+      "about": {
+        "@type":"@id"
+      },
+      "datePublished":{
+        "@type":"xsd:date"
+      },
+      "yearPublished":{
+        "@id":"datePublished",
+        "@type":"xsd:gYear"
+      },
+      "sdDatePublished":{
+        "@type":"xsd:date"
+      },
+      "sdYearPublished":{
+        "@id":"sdDatePublished",
+        "@type":"xsd:gYear"
+      },
+      "identifier":{"@type":"@id"},
+      "isPartOf":{"@type":"@id"},
+      "image":{"@type":"@id"},
+      "license":{"@type":"@id"},
+      "sdLicense":{"@type":"@id"},
+      "sdPublisher":{"@type":"@id"},
+      "publisher":{"@type":"@id"},
+      "name":{
+        "@language":"en"
+      },
+      "ldp:membershipResource":{"@type":"@id"},
+      "ldp:isMemberOfRelation":{"@type":"@id"},
+      "ldp:hasMemberOfRelation":{"@type":"@id"}
+    }
+  }
