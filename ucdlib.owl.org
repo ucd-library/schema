@@ -21,14 +21,14 @@
       {
           "@id":"is-open-access",
           "@type":["owl:Property"],
-          "domain":["xsd:boolean"],
+          "domain":["schema:Boolean"],
           "range":["ucdlib:work"],
           "description":"Describes whether a work is available via open access."
       },
       {
           "@id":"rank",
           "@type":["owl:Property"],
-          "domain":["xsd:decimal","xsd:string"],
+          "domain":["schema:Number","schema:Text"],
           "range":["schema:Thing"],
           "description":"Provides ordering for items within a set. decimal values are sorted numerically, and strings are sorted lexigraphically"
       }
@@ -46,14 +46,17 @@
     #+begin_src json :no-tangle
       {
           "@id":"ucdlib:grant",
+          "@type" : "owl:Class",
           "equivalentClass":"vivo:Grant"
       },
       {
           "@id":"ucdlib:person",
+          "@type" : "owl:Class",
           "equivalentClass":"vivo:Person"
       },
       {
           "@id":"ucdlib:work",
+          "@type" : "owl:Class",
           "equivalentClass":"vivo:Work"
       }
     #+end_src
@@ -64,6 +67,9 @@
     #+begin_src json :no-tangle
       {
           "@id": "ucdlib:dafis_abbrev",
+          "@type" : "owl:Property",
+          "domain":["xsd:string"],
+          "range":["schema:Thing"],
           "subPropertyOf":"schema:identifier",
           "name":"UC Davis DAFIS Common Abbreviations"
       }
@@ -132,36 +138,43 @@
           "label" : "Grant Type"
       }, {
           "@id" : "ucdlib:AcademicSupportGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "G",
           "subClassOf" : "ucdlib:grant",
           "label" : "Academic Support"
       }, {
           "@id" : "ucdlib:DefaultGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "X",
           "subClassOf" : "ucdlib:grant",
            "label" : "Default"
       }, {
           "@id" : "ucdlib:InstructionGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "A",
           "subClassOf" : "ucdlib:grant",
           "label" : "Instruction"
       }, {
           "@id" : "ucdlib:ResearchGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "C",
           "subClassOf" : "ucdlib:grant",
           "label" : "Research"
       }, {
           "@id" : "ucdlib:ScholarshipGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "S",
           "subClassOf" : "ucdlib:grant",
           "label" : "Scholarships / Fellowships"
       }, {
           "@id" : "ucdlib:ServiceGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "F",
           "subClassOf" : "ucdlib:grant",
           "label" : "Service / Other"
       }, {
           "@id" : "ucdlib:StudentServiceGrant",
+          "@type" : "owl:Class",
           "dafis_abbrev" : "S",
           "subClassOf" : "ucdlib:grant",
           "label" : "Student Service"
@@ -228,6 +241,7 @@
            "@type" : "@id"
          },
          "@vocab" : "http://schema.library.ucdavis.edu/",
+         "@base" : "http://schema.library.ucdavis.edu/",
          "obo" : "http://purl.obolibrary.org/obo/",
          "owl" : "http://www.w3.org/2002/07/owl#",
          "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
