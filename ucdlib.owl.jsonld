@@ -150,9 +150,6 @@
     }
     ,
     {
-        "@id" : "ucdlib:GrantType",
-        "label" : "Grant Type"
-    }, {
         "@id" : "ucdlib:AcademicSupportGrant",
         "@type" : "owl:Class",
         "dafis_abbrev" : "G",
