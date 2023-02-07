@@ -183,7 +183,7 @@ function makeMD(group){
       
     //Description
     if (g.predicate.includes("description")){
-      group_description = g.object;
+      group_description = g.object + "<br />";
     }
 
     if (group_type != "Class"){
@@ -218,7 +218,7 @@ ${group_description}
 | schema     | UC Davis Library Schema    |
 
 **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}). <br /> 
-${group_description} <br /> 
+${group_description}
 ${properties}
 `;
     group_content = group_class;
