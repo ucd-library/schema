@@ -219,7 +219,6 @@ ${group_description}
 
 **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}). <br /> 
 ${group_description} <br /> 
-
 ${properties}
 `;
     group_content = group_class;
