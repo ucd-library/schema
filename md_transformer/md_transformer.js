@@ -194,36 +194,34 @@ function makeMD(group){
 
  //subPropertyOf
   if (is_property){
-    group_property = `
-      | layout | title |
-      | ------------- |:-------------:|
-      | schema | UC Davis Library Schema    |
+    group_property = `| layout | title |
+| ------------- |:-------------:|
+| schema | UC Davis Library Schema    |
 
-      | Values expected to be one of these types  |
-      |:--------:|
-      | ${group_domain} |
+| Values expected to be one of these types  |
+|:--------:|
+| ${group_domain} |
 
-      | Used on these types  |
-      |:--------:|
-      | ${group_range} |
+| Used on these types  |
+|:--------:|
+| ${group_range} |
       
-      **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
-      ${group_description}
-    `;
+**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
+${group_description}
+`;
 
     group_content = group_property;
 
   } else {
-    group_class = `
-      | layout| title |
-      | ------------- |:-------------:|
-      | schema     | UC Davis Library Schema    |
+    group_class = `| layout| title |
+| ------------- |:-------------:|
+| schema     | UC Davis Library Schema    |
 
-      **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
-      ${group_description}
+**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
+${group_description}
 
-      ${properties}
-    `;
+${properties}
+`;
     group_content = group_class;
 
   }
