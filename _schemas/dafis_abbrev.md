@@ -5,12 +5,12 @@
 
       | Values expected to be one of these types  |
       |:--------:|
-      | Boolean |
+      | string |
 
       | Used on these types  |
       |:--------:|
-      | [work](http://schema.library.ucdavis.edu/work) |
+      | [Thing](http://schema.org/Thing) |
       
-      **is-open-access** is a Property of type [schema:Property](http://schema.org/Property).
-      Describes whether a work is available via open access.
+      **dafis_abbrev** is a Property of type [schema:Property](http://schema.org/Property).
+      
     
