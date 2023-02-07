@@ -228,7 +228,7 @@ function makeMD(group){
 
   }
 
-  let md_file = "_schemas/" + group_name + ".md";
+  let md_file = "../_schemas/" + group_name + ".md";
   fs.writeFile(md_file, group_content, (err) => {
     if (err)
       console.log(err);
