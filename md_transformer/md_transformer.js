@@ -183,7 +183,7 @@ function makeMD(group){
       
     //Description
     if (g.predicate.includes("description")){
-      group_description = g.object + "<br />";
+      group_description = g.object + "<br /><br />";
     }
 
     if (group_type != "Class"){

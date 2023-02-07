@@ -11,4 +11,4 @@
 | [work](http://schema.library.ucdavis.edu/work) |
       
 **is-open-access** is a Property of type [schema:Property](http://schema.org/Property).<br /> 
-Describes whether a work is available via open access.<br />
+Describes whether a work is available via open access.<br /><br />
