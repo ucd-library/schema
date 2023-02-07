@@ -104,13 +104,13 @@ function makeMD(group){
     //name (label)
     if (g.predicate.includes("#name")){
       group_label = g.object;
-      properties += "Label: " + group_label + "\n";
+      properties += "Label: " + group_label + "<br /> ";
     }
 
     //label
     if (g.predicate.includes("#label")){
       group_label = g.object;
-      properties += "Label: " + group_label + "\n";
+      properties += "Label: " + group_label + "<br /> ";
     }
 
     //subClassOf
@@ -128,13 +128,13 @@ function makeMD(group){
       
       group_subClassOf_link = g.object;
       group_subClassOf = "[" + wd + "](" + group_subClassOf_link +")";    
-      properties += "Subclass: " + group_subClassOf + "\n";  
+      properties += "Subclass: " + group_subClassOf + "<br /> ";  
     } 
     
     //dafis_abbrev
     if (g.predicate.includes("#dafis_abbrev")){
       group_dafis = g.object;
-      properties += "Dafis Abbreviation: " + group_dafis + "\n";
+      properties += "Dafis Abbreviation: " + group_dafis + "<br /> ";
     }
 
     //equivalentClass
@@ -150,7 +150,7 @@ function makeMD(group){
 
       group_eqclass_link = g.object;
       group_eqclass = "[" + wd + "](" + group_eqclass_link +")";    
-      properties += "Equivalent Class: " + group_eqclass + "\n"; 
+      properties += "Equivalent Class: " + group_eqclass + "<br /> "; 
     }
 
     //domain
@@ -206,7 +206,7 @@ function makeMD(group){
 |:--------:|
 | ${group_range} |
       
-**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
+**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).<br /> 
 ${group_description}
 `;
 
@@ -217,8 +217,8 @@ ${group_description}
 | ------------- |:-------------:|
 | schema     | UC Davis Library Schema    |
 
-**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}).
-${group_description}
+**${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}). <br /> 
+${group_description} <br /> 
 
 ${properties}
 `;
