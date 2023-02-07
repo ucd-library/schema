@@ -1,12 +1,8 @@
+| layout| title |
+| ------------- |:-------------:|
+| schema     | UC Davis Library Schema    |
 
-      | layout| title |
-      | ------------- |:-------------:|
-      | schema     | UC Davis Library Schema    |
+**OtherRole** is a Class of type [schema:Class](http://schema.org/Class). <br /> 
+ <br /> 
 
-      **OtherRole** is a Class of type [schema:Class](http://schema.org/Class).
-      
-
-      Subclass: [InvestigatorRole](http://vivoweb.org/ontology/core#InvestigatorRole)
-Label: Researcher
-
-    
+Subclass: [InvestigatorRole](http://vivoweb.org/ontology/core#InvestigatorRole)<br /> Label: Researcher<br /> 
