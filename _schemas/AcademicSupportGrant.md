@@ -1,6 +1,6 @@
 | layout| title |
 | ------------- |:-------------:|
-| schema     | UC Davis Library Schema    |
+| schema     | UC Davis Library Schema     |
 
 **AcademicSupportGrant** is a Class of type [schema:Class](http://schema.org/Class). <br /> 
 

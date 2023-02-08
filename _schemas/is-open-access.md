@@ -1,6 +1,6 @@
 | layout | title |
 | ------------- |:-------------:|
-| schema | UC Davis Library Schema    |
+| schema | UC Davis Library Schema |
 
 | Values expected to be one of these types  |
 |:--------:|

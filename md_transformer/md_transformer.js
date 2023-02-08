@@ -20,21 +20,22 @@ program
   .name('owl-parser')
   .version('1.0.0')
   .summary("Parses an owl file to fit into md standards.")
-
-  .option('--options <json>|@<file>')
+  .argument('JSON-LD File', 'JSON-LD to use for parsing.')
+  .option('-s, --schema <char>|@<file>')
   .description(``);
 
 
 program.parse(process.argv);
 
-// const options=program.opts();
-
+const options=program.opts();
 
 for(let file of program.args)
   owlParser(file);
 
 async function owlParser(file) {
     let text = fs.readFileSync(file);
+    let schema = "UC Davis Library Schema";
+
     let arr = [];
     let storeStream;
 
@@ -64,16 +65,17 @@ async function owlParser(file) {
 
     groups = groupBy(arr, "subject");
 
+    if(options.schema)
+      schema = options.schema;
     
-
     for (let group of groups)
-      makeMD(group);
+      makeMD(group, schema);
 
 
 
 }
 
-function makeMD(group){
+function makeMD(group, schema){
   let lastIndex = group[0].subject.lastIndexOf('/');
   let group_name = group[0].subject.substring(lastIndex + 1);
   let group_property = "";
@@ -196,7 +198,7 @@ function makeMD(group){
   if (is_property){
     group_property = `| layout | title |
 | ------------- |:-------------:|
-| schema | UC Davis Library Schema    |
+| schema | ${schema} |
 
 | Values expected to be one of these types  |
 |:--------:|
@@ -215,7 +217,7 @@ ${group_description}
   } else {
     group_class = `| layout| title |
 | ------------- |:-------------:|
-| schema     | UC Davis Library Schema    |
+| schema     | ${schema}     |
 
 **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}). <br /> 
 ${group_description}
