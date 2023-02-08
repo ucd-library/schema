@@ -70,7 +70,7 @@ function makeMD(group, schema){
   let group_class = "";
   let properties = "";
   let is_property;
-  let group_content = "";
+  let group_content = '';
   let group_type = "Class";
   let group_subClassOf = "";
   let group_subClassOf_link = "";
@@ -184,7 +184,14 @@ function makeMD(group, schema){
 
  //subPropertyOf
   if (is_property){
-    group_property = `| layout | title |
+    group_property = `---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+    
+layout: schema
+title: UC Davis Library Schema
+---
+| layout | title |
 | ------------- |:-------------:|
 | schema | ${schema} |
 
@@ -200,10 +207,17 @@ function makeMD(group, schema){
 ${group_description}
 `;
 
-    group_content = group_property;
+    group_content += group_property;
 
   } else {
-    group_class = `| layout| title |
+    group_class = `---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+        
+layout: schema
+title: UC Davis Library Schema
+---
+| layout| title |
 | ------------- |:-------------:|
 | schema     | ${schema}     |
 
@@ -211,7 +225,7 @@ ${group_description}
 ${group_description}
 ${properties}
 `;
-    group_content = group_class;
+    group_content += group_class;
 
   }
 
