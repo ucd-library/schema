@@ -19,10 +19,9 @@ const program = new Command();
 program
   .name('owl-parser')
   .version('1.0.0')
-  .summary("Parses an owl file to fit into md standards.")
   .argument('JSON-LD File', 'JSON-LD to use for parsing.')
   .option('-s, --schema <char>|@<file>')
-  .description(``);
+  .description("Parses an owl file to fit into md standards.");
 
 
 program.parse(process.argv);
@@ -39,22 +38,11 @@ async function owlParser(file) {
     let arr = [];
     let storeStream;
 
-    let contextObj;
     let groups;
 
     let textStream = stringToStream(text);
     const quadStream = rdfParser.default.parse(textStream, { contentType: 'application/ld+json'});
-    // quadStream
-    //   .on('context', (context) => contextObj = context)
-    //   .on('data', (quads) => {
-    //     console.log("C:",contextObj);
-    //     let obj = {"subject": quads.subject.value, "predicate": quads.predicate.value, "object": quads.object.value, "graph": quads.graph.value};
-    //     arr.push(obj);
-    //   })
-    //   .on('end', () => {
-    //     groups = groupBy(arr, "subject");
-    //     console.log(groups);
-    //   })
+
 
     storeStream=store.import(quadStream);
  
