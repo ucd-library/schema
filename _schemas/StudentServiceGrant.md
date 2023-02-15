@@ -9,6 +9,6 @@ title: UC Davis Library Schema
 | ------------- |:-------------:|
 | schema     | UC Davis Library Schema     |
 
-**StudentServiceGrant** is a Class of type [schema:Class](http://schema.org/Class). <br /> 
+**AcademicSupportGrant** is a Class of type [schema:Class](http://schema.org/Class). <br /> 
 
-Subclass: [grant](http://schema.library.ucdavis.edu/grant)<br /> Label: Student Service<br /> 
+Subclass: [grant](http://schema.library.ucdavis.edu/grant)<br /> Label: Academic Support<br /> 
