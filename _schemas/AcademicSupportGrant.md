@@ -5,8 +5,11 @@
 layout: schema
 title: UC Davis Library Schema
 ---
+## AcademicSupportGrant
+<br />
+
 | layout| title |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | schema     | UC Davis Library Schema     |
 
 **AcademicSupportGrant** is a Class of type [schema:Class](http://schema.org/Class). <br /> 

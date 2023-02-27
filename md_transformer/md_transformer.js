@@ -191,8 +191,11 @@ function makeMD(group, schema){
 layout: schema
 title: UC Davis Library Schema
 ---
+## ${group_name}
+<br />
+
 | layout | title |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | schema | ${schema} |
 
 | Values expected to be one of these types  |
@@ -217,8 +220,11 @@ ${group_description}
 layout: schema
 title: UC Davis Library Schema
 ---
+## ${group_name}
+<br />
+
 | layout| title |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | schema     | ${schema}     |
 
 **${group_name}** is a ${group_type} of type [schema:${group_type}](http://schema.org/${group_type}). <br /> 

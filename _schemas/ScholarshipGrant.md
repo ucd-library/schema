@@ -5,8 +5,11 @@
 layout: schema
 title: UC Davis Library Schema
 ---
+## ScholarshipGrant
+<br />
+
 | layout| title |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | schema     | UC Davis Library Schema     |
 
 **ScholarshipGrant** is a Class of type [schema:Class](http://schema.org/Class). <br /> 

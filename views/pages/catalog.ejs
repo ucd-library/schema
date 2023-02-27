@@ -1,0 +1,26 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<html>
+  <body>
+    <div class="l-basic--3col" id="blog">
+      <div class="l-sidebar-first panel o-box"></div>
+      <div class="l-content panel o-box">
+        <p style="font-size:21px">
+          Some info about the properties in this collection and which apps they are part of. Labeled Aggie Experts (AE) / DAMS (DAMS)
+        </p>
+        <h4 style="font-size:30px">Properties:</h4>
+        <% for (post of posts) { %>
+          <a  style="font-size:22px" href="<%= post.slice(0, -3) %>">
+            <div class="post">
+              <%= post.split('.')[0] %>  
+            </div>
+          </a>
+          
+        <% } %>
+      </div>
+      <div class="l-sidebar-second panel o-box"></div> 
+    </div>
+  </body>
+</html>
+
+<%- include('../partials/footer') %>

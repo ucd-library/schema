@@ -5,8 +5,11 @@
 layout: schema
 title: UC Davis Library Schema
 ---
+## rank
+<br />
+
 | layout | title |
-| ------------- |:-------------:|
+| ------------- |-------------|
 | schema | UC Davis Library Schema |
 
 | Values expected to be one of these types  |
