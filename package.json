@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@ucd-lib/theme-elements": "^1.2.2",
     "@ucd-lib/theme-sass": "^5.0.16",
