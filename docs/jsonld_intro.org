@@ -8,7 +8,8 @@
 
   The [[https://json-ld.org/playground/][JSON-LD Playground]] is a super helpful application that allows you explore
   your JSON-LD questions, and it's made with the same library that we use for
-  our application development.
+  our  [[https://github.com/json-ld/json-ld.org][jsonld node]] development.  Years ago, [[https://www.youtube.com/@ManuSporny][Manu Sporny]] made a good set of
+  example videos.
 
 ** What is Linked Data ?
    Linked Data is synomous with the Resource Description Framework (RDF), a
@@ -19,25 +20,31 @@
    the subject to some *object*.  All information in linked data are
    statements.  This is kindof like an associated array.
 
-    | subject | predicate | object                     |
-    |---------+-----------+----------------------------|
-    | this    | type      | Menu                       |
-    | this    | title     | "Bohemian Grove Wine List" |
-    | this    | date      | 1958                       |
+    | subject | predicate      | object                     |
+    |---------+----------------+----------------------------|
+    | :this   | rdf:type       | schema:Menu                |
+    | :this   | schema:name    | "Bohemian Grove Wine List" |
+    | :this   | schema:date    | 1958^schema:Date           |
+
 
     Since we want this to be a general framework, however, we want to agree on
     what the subjects and predicates mean, and so those need to have globally
-    unique identifiers (IRIs).  The objects can be *literals* like the above
+    unique identifiers (*IRI* s).  The objects can be *literals* like the above
     example. Unlike most programming languages, literals is an expandable set
     but they are represented as strings,boolean,integers,decimals, or dates.
+    In the above, the integer date is explicitly described as a ~schema:Date~.
 
-    Objects can also be IRIs too, which can help standardize vocabularies, and
-    allow linking to globally unique items.
+    An *IRI* is just *URI* with better support for UTF-8 characters.  Objects
+    can also be IRIs too, which can help standardize vocabularies, and allow
+    linking to globally unique items.
 
     Organizations can publish their IRIs for properties and objects in hopes
     that other users use those values to desribe their data, so it can be more
     readily combined. Those are called *schemas* For the web, [[https://schema.org][schema.org]] is the
     most used schema.
+
+    The above table really just used some shorthand notation for the IRIs.  In
+    reality, the IRIs represented look more like this:
 
     | subject                                         |
     | <https://digital.ucdavis.edu/ark:/87287/d7764v> |
@@ -63,7 +70,7 @@
         ],
         "http://schema.org/datePublished": [
             {
-                "@type": "http://www.w3.org/2001/XMLSchema#gYear",
+                "@type": "http://schema.org/Date",
                 "@value": "1958"
             }
         ],
@@ -76,7 +83,7 @@
     }
    #+end_src
 
-   Important points:
+   *Important points:*
    - The basic JSON format is the object, one for each *subject*
    - The *subject* is identified with the *@id* key.
    - Other keys make-up the additional *predicates* for the subject
@@ -84,30 +91,73 @@
    - If an *object* is a *literal*, then the *@value* of the object is included
      in another object along with the literal *@type* and for
      strings, it's *@language*.
-   - *objects* that are *IRI*'s are represented as simple strings.
+   - *objects* that are *IRI*'s are represented as strings.
 
-** The @context File
+*** The @context File
 
-   No one would look at that above description, and think that we've
-   accomplished our task of being easy for humans to read and write.  However,
-   the JSON-LD format includes another feature, the *@context* which you can
-   think of as a set of hints and short cuts to be used to simplify the JSON
-   objects.
+    No one would look at that above description, and think that we've
+    accomplished our task of being easy for humans to read and write.  However,
+    the JSON-LD format includes another feature, the *@context* which you can
+    think of as a set of hints and short cuts to be used to simplify the JSON
+    objects.
+
+    #+begin_src json
+      {
+          "@context" : {
+              "@base":"http://digital.ucdavis.edu/",
+              "@vocab":"http://schema.org/",
+              "xs":"http://www.w3.org/2001/XMLSchema#",
+              "datePublished": {
+                  "@type": "Date"
+               },
+              "name": {
+                  "@language":"@en"
+              }
+          },
+          "@id": "item/ark:/87287/d7764v",
+          "@type": [
+              "Menu",
+              "CreativeWork"
+          ],
+          "datePublished": "1958",
+          "name": "Bohemian Grove Wine List"
+      }
+    #+end_src
+
+    You can verify this is equivalent at the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%7B%22%40base%22%3A%22https%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%7D][Playground]].  *@context* files allow
+    you to specify; default namespaces, for vocabulary and items, assign types
+    and languages to literals, and customize the predicates that you use in your
+    json.
+
+    Now JSON parsers *will* fetch IRIs for context if they can, and you can use
+    this to use other published contexts.  For example, the following almost
+    works in the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%5D%7D][playground]].
+
+   #+begin_src json
+   {
+       "@context": "http://schema.org/",
+       "@id": "item/ark:/87287/d7764v",
+       "@type": [
+           "Menu",
+           "CreativeWork"
+       ],
+       "datePublished": "1958",
+       "name": "Bohemian Grove Wine List"
+   }
+   #+end_src
+
+ It doesn't work completely, since we don't have the proper ~@base~, you can
+ however use a list of ~@contexts~ in your files, so [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%7D%5D%2C%22%40id%22%3A%22item%2Fark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D][this]] does work.
 
    #+begin_src json
      {
-         "@context" : {
-             "@base":"http://digital.ucdavis.edu/",
-             "@vocab":"http://schema.org/",
-             "xs":"http://www.w3.org/2001/XMLSchema#",
-             "datePublished": {
-                 "@type": "xs:gYear"
-              },
-             "name": {
-                 "@language":"@en"
+         "@context": [
+             "http://schema.org/",
+             {
+                 "@base":"http://digital.ucdavis.edu/"
              }
-         },
-         "@id": "@base:ark:/87287/d7764v",
+         ],
+         "@id": "item/ark:/87287/d7764v",
          "@type": [
              "Menu",
              "CreativeWork"
@@ -117,105 +167,262 @@
      }
    #+end_src
 
-   You can verify this is equivalent at the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%7B%22%40base%22%3A%22https%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%7D][Playground]].
+*** BEWARE of the ~@context~
 
-   Now JSON parsers *will* fetch IRIs for context if they can, and you can use
-   this to use other published contexts.  For example, the following almost
-   works in the [[https://json-ld.org/playground/#startTab=tab-expanded&json-ld=%7B%22%40context%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22%40id%22%3A%22%40base%3Aark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22Menu%22%2C%22CreativeWork%22%5D%2C%22datePublished%22%3A%221958%22%2C%22name%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&frame=%7B%22%40context%22%3A%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%2C%22%40vocab%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22xs%22%3A%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%22%2C%22datePublished%22%3A%7B%22%40type%22%3A%22xs%3AgYear%22%7D%2C%22name%22%3A%7B%22%40language%22%3A%22%40en%22%7D%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%5D%7D][playground]].
+    Because the *@context*! The biggest danger that exists with jsonld files is
+    that you try and use them like a normal JSON file, where you rely on the
+    syntax of the file, but you operating on a file with the same semantics, but
+    entirely different syntax.  The ~@context~ of a file, doesn't even enforce
+    syntax on the file holding that ~@context~.  For example, all of the
+    following examples have the same semantic content.
 
-  #+begin_src json
-  {
-      "@context": "http://schema.org/",
-      "@id": "@base:ark:/87287/d7764v",
-      "@type": [
-          "Menu",
-          "CreativeWork"
-      ],
-      "datePublished": "1958",
-      "name": "Bohemian Grove Wine List"
-  }
+    This example is pretty much as compact as can be written.
+    #+name: compact
+   #+begin_src json
+      {
+          "@context":"http://schema.org/",
+          "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+          "@type": [
+              "Menu",
+              "CreativeWork"
+          ],
+          "datePublished": "1958",
+          "name": "Bohemian Grove Wine List"
+      }
+   #+end_src
+
+   In this example, sometime we use the shortcuts for the data, and sometimes we
+   don't. It doesn't matter regarding the semantics of the data
+      #+name: mixedup
+      #+begin_src json
+     {
+         "@context":"http://schema.org/",
+         "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+         "@type": ["http://schema.org/Menu","CreativeWork"],
+         "http://schema.org/datePublished": "1958",
+         "name": "Bohemian Grove Wine List"
+     }
+   #+end_src
+
+
+   In this next example, we've expanded some of the objects of the data. Again,
+   these are no different in content.
+   #+name: semi-expanded
+      #+begin_src json
+     {
+          "@context":"http://schema.org/",
+          "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+         "@type": [
+             "Menu",
+             "CreativeWork"
+         ],
+         "datePublished": [{
+             "@type":"Date",
+             "@value": 1958
+         }],
+         "name": [{
+             "@value":"Bohemian Grove Wine List"
+         }]
+     }
+   #+end_src
+
+   If you want to describe more than one object in JSON-LD, you can use the
+   ~@graph~ predicate, to include multiple objects.  In this example, we are
+   adding the same ~@id~ twice, with different data in each.  Again, this is the
+   same content in the graph.
+
+   #+name: graph
+      #+begin_src json
+     {
+      "@context":"http://schema.org/",
+         "@graph":[
+             {
+             "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+             "type": ["Menu","CreativeWork"]
+             },
+             {
+             "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+             "datePublished": "1958",
+             "name": "Bohemian Grove Wine List"
+             }
+         ]
+     }
+   #+end_src
+
+   Here, we use the content to rename the ~date~ to something we are more
+   familair with.  No change to the data added.
+
+       #+name: date_renamed
+   #+begin_src json
+          {
+             "@context":["http://schema.org/",
+                         {
+                 "date":{
+                   "@id":"datePublished",
+                   "@type":"Date"
+                 }}],
+             "@id": "http://digital.ucdavis.edu/item/ark:/87287/d7764v",
+             "@type": [
+                 "Menu",
+                 "CreativeWork"
+             ],
+             "date": "1958",
+             "name": "Bohemian Grove Wine List"
+         }
   #+end_src
 
-It doesn't work completely, since we don't have the proper ~@base~, you can
-however use a list of ~@contexts~ in your files, so this does work.
+   So, if you want to be sure when using JSON-LD files, and you want to use
+   them syntatically, you *must*:
+   - Trust that your source will never change their syntax
+   - Remove any @context dependance
+   - Actively reformat your files based on a ~@context~ that you know
 
-  #+begin_src json
-    {
-        "@context": [
-            "http://schema.org/",
-            {
-                "@base":"http://digital.ucdavis.edu/"
-            }
-        ],
-        "@id": "@base:ark:/87287/d7764v",
-        "@type": [
-            "Menu",
-            "CreativeWork"
-        ],
-        "datePublished": "1958",
-        "name": "Bohemian Grove Wine List"
-    }
-  #+end_src
+   Alternatively, you can add JSON-LD into your own local database, and query
+   the database for what you need.
+
+** Blank Nodes
+   An additional level of complexity that we need to discuss is the notion of a
+   blank node.  In the [[*What is Linked Data ?][What is Linked Data ?]] section, we discussed how every
+   statement is a subject, predicate, and object.  It turns out, that often one
+   is not really interested in giving a name to every subject in the system.
+   These are known as blank nodes or anonymous resources in the linked data
+   speak.  We'll have to change our example.  Let's consider this new jsonld
+   file.
+
+   #+begin_src json
+     {
+         "@context":"http://schema.org/",
+         "@id": "http://experts.ucdavis.edu/person/quinn",
+         "name":"Quinn Hart",
+         "address":{
+             "name":"University of California, Davis",
+             "streetAddress": "1 Shields Ave",
+             "addressRegion":"CA",
+             "addressLocality":"Davis",
+             "postalCode":95616
+             }
+     }
+   #+end_src
+
+   Note the difference here that the ~address~ points to another object. That
+   object has the predicates ~name~, ~streetAddress~, etc.  We never specified
+   the ~@id~ of that.  We just know it's the ~object~ of the ~address~
+   statement, and it's the ~subject~ of the ~streetAddress~ statement.  We leave
+   it to our tools to make up a new for this object.  Our table of data might
+   look like this:
+
+    | subject | predicate        | object          |
+    |---------+------------------+-----------------|
+    | :quinn  | :name            | "Quinn Hart"    |
+    | :quinn  | :address         | _:b0            |
+    | _:b0    | :streetAddress   | "1 Shields Ave" |
+    | _:b0    | :addressLocality | "Davis"         |
+
+
+   We can use this example as a more expansive [[https://json-ld.org/playground/#startTab=tab-flattened&json-ld=%7B%22%40context%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22%40id%22%3A%22http%3A%2F%2Fexperts.ucdavis.edu%2Fperson%2Fquinn%22%2C%22name%22%3A%22Quinn%20Hart%22%2C%22address%22%3A%7B%22name%22%3A%22University%20of%20California%2C%20Davis%22%2C%22streetAddress%22%3A%221%20Shields%20Ave%22%2C%22addressRegion%22%3A%22CA%22%2C%22addressLocality%22%3A%22Davis%22%2C%22postalCode%22%3A95616%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%5D%7D][preview]] of the
+   operations you can perform on jsonld files.
+
+   How blank nodes are represented provide another level of complexity to the
+   syntax of the json-ld files.
 
 ** Types of JSON-LD formats
+   The main functions you can apply to json-ld are expand, compact, canonize,
+   and frame.  The first three do not *ever* change the semantics of your data.
+   Framing can affect the content of your data.  When investigating these
+   remember, the [[https://json-ld.org/playground/][Playground]] is your friend.
 
-**** Expanded
-     No custom *@context*.  This is the most verbose, but also the most
-     consistant, since your application doesn't need to care about any
-     particular context being used.  This is what we saw in example 1.
+*** Expanded
+    No custom *@context*.  This is the most verbose, but also the most
+    consistant, since your application doesn't need to care about any
+    particular context being used.  This is what we saw in the first example.
+*** Compacted
+    JSON data in expanded format can be compacted to a reduced standard format as
+    specified by the context format, Using the context below, all the previous
+    [[https://json-ld.org/playground/#startTab=tab-compacted&json-ld=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%7D%5D%2C%22%40id%22%3A%22item%2Fark%3A%2F87287%2Fd7764v%22%2C%22%40type%22%3A%5B%22http%3A%2F%2Fschema.org%2FMenu%22%2C%22CreativeWork%22%5D%2C%22http%3A%2F%2Fschema.org%2FdatePublished%22%3A%7B%22%40type%22%3A%22Date%22%2C%22%40value%22%3A%221958%22%7D%2C%22http%3A%2F%2Fschema.org%2Fname%22%3A%22Bohemian%20Grove%20Wine%20List%22%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%7D%5D%7D][examples]] will have the same syntax.
 
-**** Compacted
-     JSON data in expanded format is then compacted, to the reduced format as
-     specified by the context format.  This is functional, since the data within
-     a JSON-LD file really doesn't need to be
+    #+name: context
+    #+begin_src json
+      {
+          "@context": [
+              "http://schema.org/",
+              {
+                  "@base":"http://digital.ucdavis.edu/"
+              }
+          ]
+      }
+    #+end_src
 
-     If you want to use a compact format JSON, so for example, you have a more
-     pleasant JSON object to use, unless you're sure of where the JSON-LD came
-     from, you might have to run an explicit compact over your data.  Here is
-     another playground example.
+*** Flattened
+    Flattened JSON data doesn't allow blank nodes to be embedded inside another
+    object. For example, in our address example, the flattened data would
+    include two explicit objects, one for the person and one for the address.
 
-    {
-        "@context": [
-            "http://schema.org/",
-            {
-                "@base":"http://digital.ucdavis.edu/"
-            }
-        ],
-        "@id": "@base:ark:/87287/d7764v",
-        "@type": [
-            "http://schema.org/Menu",
-            "CreativeWork"
-        ],
-        "http://schema.org/datePublished": {"@type":"Date","@value":"1958" },
-        "http://schema.org/name": "Bohemian Grove Wine List"
-    }
+*** Framed
+    Framing jsonld files combines the same components as compaction, if you
+    include a ~@context~ file, but it also allows for object matching,
+    selection, defaults, and ~@embedding~.  In some respects framing a JSON-LD
+    file can be used to generate many of the potential syntaxes that we've
+    seen.  Framing data can provide the best format for applications that are
+    expecting more traditional json data.
 
+    For example, let's take the expanded and flattened verion of our previous
+    example
 
-**** N-quads / Canonized
+    #+name: expanded-flattend
+    #+begin_src json
+      [
+          {
+          "@id": "_:b0",
+          "http://schema.org/addressLocality": [{ "@value": "Davis" } ],
+          "http://schema.org/addressRegion": [{"@value": "CA" }],
+          "http://schema.org/name": [{"@value": "University of California, Davis"}],
+          "http://schema.org/postalCode": [{"@value": 95616}],
+          "http://schema.org/streetAddress": [{"@value": "1 Shields Ave"}]
+      },
+          {
+          "@id": "http://experts.ucdavis.edu/person/quinn",
+          "@type":"http://schema.org/Person",
+          "http://schema.org/address": [{"@id": "_:b0"}],
+          "http://schema.org/name": [{"@value": "Quinn Hart"}]
+      }
+      ]
+    #+end_src
 
-     A very verbose, non-JSON format is the N-quad.  N-quads is another basic
-     format that can be used to exchange data.  It is included in the JSON-LD
-     discussion, because the N-Quads format
+    And frame the data like this:
+    #+begin_src json
+      {
+          "@context": "http://schema.org/",
+          "@type":"Person",
+          "@embed":"@always"
+      }
+    #+end_src
 
+    To recreate the original data as can be see in this [[https://json-ld.org/playground/#startTab=tab-framed&json-ld=%5B%7B%22%40id%22%3A%22_%3Ab0%22%2C%22http%3A%2F%2Fschema.org%2FaddressLocality%22%3A%5B%7B%22%40value%22%3A%22Davis%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2FaddressRegion%22%3A%5B%7B%22%40value%22%3A%22CA%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2Fname%22%3A%5B%7B%22%40value%22%3A%22University%20of%20California%2C%20Davis%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2FpostalCode%22%3A%5B%7B%22%40value%22%3A95616%7D%5D%2C%22http%3A%2F%2Fschema.org%2FstreetAddress%22%3A%5B%7B%22%40value%22%3A%221%20Shields%20Ave%22%7D%5D%7D%2C%7B%22%40id%22%3A%22http%3A%2F%2Fexperts.ucdavis.edu%2Fperson%2Fquinn%22%2C%22%40type%22%3A%22http%3A%2F%2Fschema.org%2FPerson%22%2C%22http%3A%2F%2Fschema.org%2Faddress%22%3A%5B%7B%22%40id%22%3A%22_%3Ab0%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2Fname%22%3A%5B%7B%22%40value%22%3A%22Quinn%20Hart%22%7D%5D%7D%5D&frame=%7B%22%40context%22%3A%22http%3A%2F%2Fschema.org%2F%22%2C%22%40type%22%3A%22Person%22%2C%22%40embed%22%3A%22%40always%22%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%7D%5D%7D][example]].  There are many
+    more aspects to framing data; matching objects; default  values, excluding
+    some data, and even [[https://json-ld.org/playground/#startTab=tab-framed&json-ld=%5B%7B%22%40id%22%3A%22_%3Ab0%22%2C%22%40type%22%3A%22http%3A%2F%2Fschema.org%2FPostalCode%22%2C%22http%3A%2F%2Fschema.org%2FaddressLocality%22%3A%5B%7B%22%40value%22%3A%22Davis%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2FaddressRegion%22%3A%5B%7B%22%40value%22%3A%22CA%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2Fname%22%3A%5B%7B%22%40value%22%3A%22University%20of%20California%2C%20Davis%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2FpostalCode%22%3A%5B%7B%22%40value%22%3A95616%7D%5D%2C%22http%3A%2F%2Fschema.org%2FstreetAddress%22%3A%5B%7B%22%40value%22%3A%221%20Shields%20Ave%22%7D%5D%7D%2C%7B%22%40id%22%3A%22http%3A%2F%2Fexperts.ucdavis.edu%2Fperson%2Fquinn%22%2C%22%40type%22%3A%22http%3A%2F%2Fschema.org%2FPerson%22%2C%22http%3A%2F%2Fschema.org%2Faddress%22%3A%5B%7B%22%40id%22%3A%22_%3Ab0%22%7D%5D%2C%22http%3A%2F%2Fschema.org%2Fname%22%3A%5B%7B%22%40value%22%3A%22Quinn%20Hart%22%7D%5D%7D%5D&frame=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22domicileOf%22%3A%7B%22%40reverse%22%3A%22address%22%7D%7D%5D%2C%22%40embed%22%3A%22%40always%22%2C%22%40type%22%3A%22PostalCode%22%2C%22domicileOf%22%3A%7B%22%40type%22%3A%22Person%22%7D%7D&context=%7B%22%40context%22%3A%5B%22http%3A%2F%2Fschema.org%2F%22%2C%7B%22%40base%22%3A%22http%3A%2F%2Fdigital.ucdavis.edu%2F%22%7D%5D%7D][reorganizing]] the data.
 
-**** Framed
+*** N-quads / Canonized
 
-          Make sure to include example here
+    A very verbose, non-JSON format is the N-quad.  N-quads is another basic
+    format that can be used to exchange data.  It is included in the JSON-LD
+    discussion, because the N-Quads format can also be used as a method to
+    compare the samantics of any jsonld files.  For example, any of the
+    examples in the [[*BEWARE of the ~@context~][BEWARE of the ~@context~]] section will result in the exact
+    same set of quads.
 
-*** Graphs
+    You can preform checksums and diffs on these files.
 
-       - The @context file
+** Graphs
 
-         - Identifiers
+      - The @context file
 
-           - Switching Bases
+        - Identifiers
 
+          - Switching Bases
 
-*** Gotchas
-
+** Gotchas
 
 **** Lists Versus Sets
-
 
 **** arks:
 
@@ -236,7 +443,6 @@ however use a list of ~@contexts~ in your files, so this does work.
                     "http://schema.org/name": "Bohemian Grove Wine List"
                 }
               #+end_src
-
 
 **** Altering the base for your input data
 
@@ -280,3 +486,5 @@ however use a list of ~@contexts~ in your files, so this does work.
 
 
       [[https://orgmode.org/worg/org-tutorials/non-beamer-presentations.html][Presentations]]
+
+**** What Version of JSON-LD
