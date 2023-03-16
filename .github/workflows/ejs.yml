@@ -39,31 +39,31 @@ jobs:
       index: ${{ steps.set-matrix.outputs.index }}
       contexts: ${{ steps.set-matrix.outputs.contexts }}
   
-#   buildIndexPath:
-#     needs: generateInputPaths
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         index: ${{ fromJson(needs.generateInputPaths.outputs.index) }}
-#     steps:
-#     - name: Checkout
-#       uses: actions/checkout@v3
-#     - name: Setup Pages
-#       uses: actions/configure-pages@v2
-#     - name: Create Files
-#       run: touch _site/${{ matrix.index }}.html
-#     - name: action-ejs
-#       uses: jaywcjlove/action-ejs@v1.0.2
-#       with:
-#         template-file: ./views/pages/${{ matrix.index }}.ejs
-#         # output html path
-#         vars-file: |
-#           {"markdown": "${{ matrix.index }}.md" }
-#         output: _site/${{ matrix.index }}.html
-#     - uses: actions/upload-artifact@master
-#       with:
-#         name: github-pages
-#         path: ./_site/
+  buildIndexPath:
+    needs: generateInputPaths
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index: ${{ fromJson(needs.generateInputPaths.outputs.index) }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Create Files
+      run: touch _site/${{ matrix.index }}.html
+    - name: action-ejs
+      uses: jaywcjlove/action-ejs@v1.0.2
+      with:
+        template-file: ./views/pages/${{ matrix.index }}.ejs
+        # output html path
+        vars-file: |
+          {"markdown": "${{ matrix.index }}.md" }
+        output: _site/${{ matrix.index }}.html
+    - uses: actions/upload-artifact@master
+      with:
+        name: github-pages
+        path: ./_site/
         
   buildSchemasPath:
     needs: generateInputPaths
@@ -127,9 +127,7 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-#     needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
-    needs: [buildSchemasPath, buildContextsPath]
-#     needs: buildIndexPath
+    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -142,10 +140,6 @@ jobs:
         path: ./_site/
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
-      with:
-        name: github-pages
-        path: ./_site/
-
 # Deployment job
   deploy:
     environment:
