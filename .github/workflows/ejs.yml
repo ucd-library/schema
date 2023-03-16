@@ -92,8 +92,6 @@ jobs:
       with:
         name: github-pages
         path: ./_site/
-
-
       
   buildContextsPath:
     needs: generateInputPaths
@@ -125,27 +123,29 @@ jobs:
         path: ./_site/
         
   # Build job
-#   build:
-#     runs-on: ubuntu-latest
-#     needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
-#     steps:
-#     - name: Checkout
-#       uses: actions/checkout@v3
-#     - name: Setup Pages
-#       uses: actions/configure-pages@v2
-#     - uses: actions/download-artifact@master
-#       with:
-#         name: github-pages
-#         path: ./_site/
-#     - name: Upload artifact
-#       uses: actions/upload-pages-artifact@v1
+  build:
+    runs-on: ubuntu-latest
+    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Download artifact 
+      uses: actions/download-artifact@master
+      with:
+        name: github-pages
+        path: ./_site/
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+
 # Deployment job
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
