@@ -60,10 +60,10 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.index }}.md" }
         output: _site/${{ matrix.index }}.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: github-pages
-        path: ./_site/
+#     - uses: actions/upload-artifact@master
+#       with:
+#         name: github-pages
+#         path: ./_site/
         
   buildSchemasPath:
     needs: generateInputPaths
@@ -88,10 +88,10 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.schemas }}.md" }
         output: _site/${{ matrix.schemas }}/index.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: github-pages
-        path: ./_site/
+#     - uses: actions/upload-artifact@master
+#       with:
+#         name: github-pages
+#         path: ./_site/
 
 
       
@@ -119,10 +119,10 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.contexts }}.md" }
         output: _site/${{ matrix.contexts }}.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: github-pages
-        path: ./_site/
+#     - uses: actions/upload-artifact@master
+#       with:
+#         name: github-pages
+#         path: ./_site/
         
   # Build job
   build:
