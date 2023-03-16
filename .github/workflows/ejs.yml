@@ -139,6 +139,9 @@ jobs:
         path: ./_site/
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
+      with:
+        name: github-pages
+        path: ./_site/artifact.tar
 
 # Deployment job
   deploy:
