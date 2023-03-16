@@ -133,10 +133,10 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup Pages
       uses: actions/configure-pages@v2
-    - uses: actions/download-artifact@master
-      with:
-        name: github-pages
-        path: ./_site/
+#     - uses: actions/download-artifact@master
+#       with:
+#         name: github-pages
+#         path: ./_site/
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v1
 # Deployment job
