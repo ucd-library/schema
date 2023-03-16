@@ -60,10 +60,10 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.index }}.md" }
         output: _site/${{ matrix.index }}.html
-#     - uses: actions/upload-artifact@master
-#       with:
-#         name: github-pages
-#         path: ./_site/
+    - uses: actions/upload-artifact@master
+      with:
+        name: github-pages
+        path: ./_site/
         
   buildSchemasPath:
     needs: generateInputPaths
@@ -88,10 +88,10 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.schemas }}.md" }
         output: _site/${{ matrix.schemas }}/index.html
-#     - uses: actions/upload-artifact@master
-#       with:
-#         name: github-pages
-#         path: ./_site/
+    - uses: actions/upload-artifact@master
+      with:
+        name: github-pages
+        path: ./_site/
 
 
       
@@ -119,33 +119,33 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.contexts }}.md" }
         output: _site/${{ matrix.contexts }}.html
-#     - uses: actions/upload-artifact@master
-#       with:
-#         name: github-pages
-#         path: ./_site/
+    - uses: actions/upload-artifact@master
+      with:
+        name: github-pages
+        path: ./_site/
         
   # Build job
-  build:
-    runs-on: ubuntu-latest
-    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
+#   build:
+#     runs-on: ubuntu-latest
+#     needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v3
+#     - name: Setup Pages
+#       uses: actions/configure-pages@v2
 #     - uses: actions/download-artifact@master
 #       with:
 #         name: github-pages
 #         path: ./_site/
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
+#     - name: Upload artifact
+#       uses: actions/upload-pages-artifact@v1
 # Deployment job
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
