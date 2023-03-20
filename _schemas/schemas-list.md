@@ -1,3 +1,3 @@
-- [AcademicSupportGrant](/_schemas/AcademicSupportGrant)
-- [CoPrinciplalInvestigatorRole](/_schemas/CoPrincipalInvestigatorRole)
+- [AcademicSupportGrant](/schema/_schemas/AcademicSupportGrant)
+- [CoPrinciplalInvestigatorRole](/schema/_schemas/CoPrincipalInvestigatorRole)
 - [Bla](/)
