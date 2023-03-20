@@ -58,7 +58,7 @@ jobs:
         template-file: ./views/pages/${{ matrix.index }}.ejs
         # output html path
         vars-file: |
-          {"markdown": "${{ matrix.index }}.md" }
+          {"markdown": "${{ matrix.index }}.md", "schemas": "${{ fromJson(needs.generateInputPaths.outputs.schemas) }}"}
         output: temp_site/${{ matrix.index }}.html
     - uses: actions/upload-artifact@master
       with:
