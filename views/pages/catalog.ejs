@@ -10,9 +10,9 @@
         </p>
         <h4 style="font-size:30px">Properties:</h4>
 
-        <% schemas.forEach(function(schema) { %>
+        <% for (schema of schemas) { %>
           <%- schema %>
-        <% }); %>
+        <% ); %>
 
       </div>
       <div class="l-sidebar-second panel o-box"></div> 
