@@ -60,7 +60,7 @@ jobs:
         vars-file: |
           {"markdown": "${{ matrix.index }}.md"}
         vars: |
-          {"schemas": "${{ fromJson(needs.generateInputPaths.outputs.schemas) }}"}
+          {"schemas": "${{ needs.generateInputPaths.outputs.schemas }}"}
         output: temp_site/${{ matrix.index }}.html
     - uses: actions/upload-artifact@master
       with:
