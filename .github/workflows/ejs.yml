@@ -152,7 +152,7 @@ jobs:
         # output html path
         vars-file: |
           {"posts": "temp_context.md" }
-        output: temp_site/_schemas/index.html
+        output: temp_site/_contexts/index.html
     - run: rm temp_context.md
     - uses: actions/upload-artifact@master
       with:
