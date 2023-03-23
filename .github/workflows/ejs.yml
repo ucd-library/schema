@@ -27,10 +27,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      - name: Node Install
-        run:  (cd ./md_transformer; npm install)
-      - name: MD-Transformer
-        run:  (cd ./md_transformer; node ./md_transformer.js ../ucdlib.owl.jsonld)
       - name: Generate matrix
         id: set-matrix
         run: |
