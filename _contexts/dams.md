@@ -1,1 +1,1 @@
-[DAMS Context](https://ucd-library.github.io/schema/@context/dams.jsonld)
+[DAMS Context](https://ucd-library.github.io/schema/_context/dams.jsonld)

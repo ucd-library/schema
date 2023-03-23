@@ -1,1 +1,1 @@
-[Aggie Experts Context](https://ucd-library.github.io/schema/@context/dams.json)
+[Aggie Experts Context](https://ucd-library.github.io/schema/_contexts/dams.json)

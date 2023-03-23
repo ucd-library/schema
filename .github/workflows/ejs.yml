@@ -142,9 +142,9 @@ jobs:
         find ./_contexts -maxdepth 1 -name '*.md' -type f -print | while read file
           do
             md_name=$(echo "$file" | awk -F "./_contexts/" '{ print $2}' | awk -F ".md" '{ print $1}')
-            md_path=https://ucd-library.github.io/schema$(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}').json
+            md_path=https://ucd-library.github.io/schema$(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}')
             echo "###### [$md_name]($md_path)" >> temp_context.md
-          done
+          done 
     - name: action-ejs
       uses: jaywcjlove/action-ejs@v1.0.2
       with:
@@ -174,7 +174,7 @@ jobs:
         find ./_schemas -maxdepth 1 -name '*.md' -type f -print | while read file
         do
           md_name=$(echo "$file" | awk -F "./_schemas/" '{ print $2}' | awk -F ".md" '{ print $1}')
-          md_path=https://ucd-library.github.io/schema$(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}')/index.html
+          md_path=https://ucd-library.github.io/schema(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}')
           echo "###### [$md_name]($md_path)" >> temp_collection.md
         done
         ls -l
