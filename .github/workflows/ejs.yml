@@ -19,183 +19,25 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-jobs:
-  generateInputPaths:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Generate matrix
-        id: set-matrix
-        run: |
-          echo "index=$(find . -maxdepth 1 -name '*.md' -type f -print | jq -R -s -c 'split(".md\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
-          echo "schemas=$(find ./_schemas -maxdepth 1 -name '*.md' -type f -print | jq -R -s -c 'split(".md\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
-          echo "contexts=$(find ./_contexts -maxdepth 1 -name '*.md' -type f -print | jq -R -s -c 'split(".md\n") | map(select(length > 0))')" >> $GITHUB_OUTPUT
-    outputs:
-      schemas: ${{ steps.set-matrix.outputs.schemas }}
-      index: ${{ steps.set-matrix.outputs.index }}
-      contexts: ${{ steps.set-matrix.outputs.contexts }}
-  
-  #Build the Index Markdown Paths
-  buildIndexPath:
-    needs: generateInputPaths
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        index: ${{ fromJson(needs.generateInputPaths.outputs.index) }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Create Files
-      run: touch temp_site/${{ matrix.index }}.html
-    - name: action-ejs
-      uses: jaywcjlove/action-ejs@v1.0.2
-      with:
-        template-file: ./views/pages/${{ matrix.index }}.ejs
-        # output html path
-        vars-file: |
-          {"markdown": "${{ matrix.index }}.md" }
-        output: temp_site/${{ matrix.index }}.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: x-pages
-        path: ./temp_site/
-
-  #Build the Schema Markdown Paths      
-  buildSchemasPath:
-    needs: generateInputPaths
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        schemas: ${{ fromJson(needs.generateInputPaths.outputs.schemas) }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Create Files
-      run: |
-        mkdir temp_site/${{ matrix.schemas }}
-        touch temp_site/${{ matrix.schemas }}/index.html
-    - name: action-ejs
-      uses: jaywcjlove/action-ejs@v1.0.2
-      with:
-        template-file: ./views/pages/_schemas/article.ejs
-        # output html path
-        vars-file: |
-          {"markdown": "${{ matrix.schemas }}.md" }
-        output: temp_site/${{ matrix.schemas }}/index.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: x-pages
-        path: ./temp_site/
-
-  #Build the Context Markdown Paths  
-  buildContextsPath:
-    needs: generateInputPaths
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        contexts: ${{ fromJson(needs.generateInputPaths.outputs.contexts) }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Create Files
-      run: |
-        mkdir temp_site/${{ matrix.contexts }}
-        touch temp_site/${{ matrix.contexts }}/index.html
-    - name: action-ejs
-      uses: jaywcjlove/action-ejs@v1.0.2
-      with:
-        template-file: ./views/pages/_contexts/contexts.ejs
-        # output html path
-        vars-file: |
-          {"markdown": "${{ matrix.contexts }}.md" }
-        output: temp_site/${{ matrix.contexts }}/index.html
-    - uses: actions/upload-artifact@master
-      with:
-        name: x-pages
-        path: ./temp_site/
-
-  #Build Context Collection Page
-  buildContextCollectionPage:
-    needs: generateInputPaths
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Create Collection Entries
-      run: |
-        touch temp_context.md
-        find ./_contexts -maxdepth 1 -name '*.md' -type f -print | while read file
-          do
-            md_name=$(echo "$file" | awk -F "./_contexts/" '{ print $2}' | awk -F ".md" '{ print $1}')
-            md_path=https://ucd-library.github.io/schema$(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}')
-            echo "###### [$md_name]($md_path)" >> temp_context.md
-          done 
-    - name: action-ejs
-      uses: jaywcjlove/action-ejs@v1.0.2
-      with:
-        template-file: ./views/pages/catalog.ejs
-        # output html path
-        vars-file: |
-          {"posts": "temp_context.md" }
-        output: temp_site/_contexts/index.html
-    - run: rm temp_context.md
-    - uses: actions/upload-artifact@master
-      with:
-        name: x-pages
-        path: ./temp_site/      
-        
-  #Build Schema Collection Page 
-  buildSchemaCollectionPage:
-    needs: generateInputPaths
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup Pages
-      uses: actions/configure-pages@v2
-    - name: Create Collection Entries
-      run: |
-        touch temp_collection.md
-        find ./_schemas -maxdepth 1 -name '*.md' -type f -print | while read file
-        do
-          md_name=$(echo "$file" | awk -F "./_schemas/" '{ print $2}' | awk -F ".md" '{ print $1}')
-          md_path=https://ucd-library.github.io/schema$(echo "$file" | awk -F "." '{ print $2}' | awk -F ".md" '{ print $1}')
-          echo "###### [$md_name]($md_path)" >> temp_collection.md
-        done
-        ls -l
-    - name: action-ejs
-      uses: jaywcjlove/action-ejs@v1.0.2
-      with:
-        template-file: ./views/pages/catalog.ejs
-        # output html path
-        vars-file: |
-          {"posts": "temp_collection.md" }
-        output: temp_site/_schemas/index.html
-    - run: rm temp_collection.md
-    - uses: actions/upload-artifact@master
-      with:
-        name: x-pages
-        path: ./temp_site/
-        
-        
+jobs:        
   # Build and upload to Github Pages job
   build:
     runs-on: ubuntu-latest
-    needs: [buildIndexPath, buildSchemasPath, buildContextsPath]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Node Install
+      run:  (npm install ejs)
+    - name: MD-Transformer
+      run: cd md_transformer; npm install; node md_transformer.js ../ucdlib.owl.jsonld;
+    - name: Run EJS-HTML parser
+      run: node run.js
+    - uses: actions/upload-artifact@master
+      with:
+          name: x-pages
+          path: ./temp_site/
     - name: Download artifact 
       uses: actions/download-artifact@master
       with:
