@@ -28,6 +28,8 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup Pages
       uses: actions/configure-pages@v2
+    - name: Print Files
+      run: ls -l _contexts
     - name: Node Install
       run:  (npm install ejs)
     - name: MD-Transformer
