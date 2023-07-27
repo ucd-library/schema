@@ -1,16 +1,15 @@
 const fs = require('fs');
 let ejs = require('ejs');
 const tempRoot = "./temp_site/"
-
+const indexFolder = './';
+const schemasFolder = './_schemas/';
+const contextFolder = './_contexts/';
+const folders = [indexFolder, schemasFolder, contextFolder]
 
   /**
    * @description Main function that runs ejs schema site creation 
    */
     function main() {
-        let indexFolder = './';
-        let schemasFolder = './_schemas/';
-        let contextFolder = './_contexts/';
-        let folders = [indexFolder, schemasFolder, contextFolder]
         fs.mkdirSync(tempRoot, {recursive: true});
         if (!fs.existsSync(tempRoot + "temp_schemas_collection.md")) 
             runWriteFile(tempRoot+ "temp_schemas_collection.md", " ");
@@ -19,6 +18,17 @@ const tempRoot = "./temp_site/"
             runWriteFile(tempRoot+ "temp_contexts_collection.md", " ");
         console.log("Files Created Successfully.");
         
+        keywordParsing(folders);
+
+        collectionIndex();
+        console.log("Temp Folder Created Successfully")
+
+    }
+  /**
+   * @description Does parsing of each variable used in this proess
+   * @param {String} folders - Folders of each type of file
+   */
+    function keywordParsing (folders){
         for(let folder of folders){
             fs.readdirSync(folder).forEach(file => {
                 let md = '';
@@ -29,6 +39,7 @@ const tempRoot = "./temp_site/"
                 let typeCollection = '';
                 let viewsFolder = "./views/pages/";
                 let CollectionPath = "https://ucd-library.github.io/schema/";
+                    
 
                 /* Create the following items:
                     * temp directory, 
@@ -66,12 +77,20 @@ const tempRoot = "./temp_site/"
                     if(typeCollection != '') createCollection(typeCollection, tempRoot, md_name, md_path);
                     addMarkdown(md, ejsFile, htmlFile);
                 }    
+
+                if(folder == "./_contexts/" && (file.split('.').pop() == "json" || file.split('.').pop() == "jsonld")){
+                    fldr = folder.split("./");
+                    fs.mkdirSync(tempRoot + folder + "json",{recursive: true});
+                    let org = folder + file;
+                    let dest = tempRoot + fldr[1] + "json/" + file;
+                    fs.copyFile(org, dest, (err) => {
+                        if (err) throw err;
+                        console.log(file + ' was copied to temp ' + folder);
+                    });
+                }
+
             });
         }
-
-        collectionIndex();
-        console.log("Temp Folder Created Successfully")
-
     }
 
 
